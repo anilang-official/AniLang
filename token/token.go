@@ -13,23 +13,62 @@ const (
 	EOF     = "EOF"     // End of file
 
 	// Identifiers + literals
-	IDENT = "IDENT" // add, foobar, x, y, ...
-	INT   = "INT"   // 1234567890
+	IDENTFIER = "IDENT"  // add, foobar, x, y, ...
+	INT       = "INT"    // 1234567890
+	STRING    = "STRING" // "foobar"
 
 	// Operators
-	ASSIGN = "="
-	PLUS   = "+"
+	ASSIGN   = "="
+	PLUS     = "+"
+	MINUS    = "-"
+	BANG     = "!"
+	ASTERISK = "*"
+	SLASH    = "/"
+	EQUAL    = "=="
+	NOTEQUAL = "!="
+
+	LESSTHAN    = "<"
+	GREATERTHEN = ">"
 
 	// Delimiters
 	COMMA     = ","
 	SEMICOLON = ";"
+	COLON     = ":"
 
-	LPAREN = "("
-	RPAREN = ")"
-	LBRACE = "{"
-	RBRACE = "}"
+	LPAREN   = "("
+	RPAREN   = ")"
+	LBRACE   = "{"
+	RBRACE   = "}"
+	LBRACKET = "["
+	RBRACKET = "]"
 
 	// Keywords
 	FUNCTION = "FUNCTION" // fn
 	LET      = "LET"      // let x = 5;
+	TRUE     = "TRUE"     // true
+	FALSE    = "FALSE"    // false
+	IF       = "IF"       // if (x < y) { return true; }
+	ELSE     = "ELSE"     // else { return false; }
+	RETURN   = "RETURN"   // return 5;
+	BREAK    = "BREAK"    // break;
+	CONTINUE = "CONTINUE" // continue;
 )
+
+var keywords = map[string]TokenType{
+	"fn":       FUNCTION,
+	"let":      LET,
+	"true":     TRUE,
+	"false":    FALSE,
+	"if":       IF,
+	"else":     ELSE,
+	"return":   RETURN,
+	"yamete":   BREAK,
+	"continue": CONTINUE,
+}
+
+func LookupIdentifierType(identifier string) TokenType {
+	if tok, ok := keywords[identifier]; ok {
+		return tok
+	}
+	return IDENTFIER
+}
