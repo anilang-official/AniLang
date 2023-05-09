@@ -1,3 +1,3 @@
-module anilang/interpreter
+module github.com/anilang-official/AniLang
 
 go 1.20
