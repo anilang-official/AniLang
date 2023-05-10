@@ -21,6 +21,11 @@ func Start(in io.Reader, out io.Writer) {
 			return
 		}
 		line := scanner.Text()
+
+		if line == ".exit" {
+			return
+		}
+
 		l := lexer.New(line)
 
 		for tok := l.NextToken(); tok.Type != token.EOF; tok = l.NextToken() {
