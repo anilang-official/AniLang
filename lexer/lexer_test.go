@@ -3,7 +3,6 @@ package lexer
 import (
 	"testing"
 
-	"github.com/anilang-official/AniLang/lexer"
 	"github.com/anilang-official/AniLang/token"
 )
 
@@ -134,7 +133,7 @@ func TestNextToken(t *testing.T) {
 		{token.EOF, ""},
 	}
 
-	l := lexer.New(input)
+	l := New(input)
 
 	for i, tt := range tests {
 		tok := l.NextToken()
