@@ -167,10 +167,12 @@ func (l *Lexer) readIdentifier() string {
 	return l.input[pos:l.position]
 }
 
+// isLetter returns true if the byte is a letter
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }
 
+// isDigit returns true if the byte is a digit
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
 }
