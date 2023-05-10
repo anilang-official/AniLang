@@ -85,7 +85,7 @@ func TestNextToken(t *testing.T) {
 		{token.INT, "5"},
 		{token.LESSTHAN, "<"},
 		{token.INT, "10"},
-		{token.GREATERTHEN, ">"},
+		{token.GREATERTHAN, ">"},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
 		{token.IF, "if"},

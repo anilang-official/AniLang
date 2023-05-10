@@ -18,17 +18,23 @@ const (
 	STRING    = "STRING" // "foobar"
 
 	// Operators
-	ASSIGN   = "="
-	PLUS     = "+"
-	MINUS    = "-"
-	BANG     = "!"
-	ASTERISK = "*"
-	SLASH    = "/"
-	EQUAL    = "=="
-	NOTEQUAL = "!="
+	ASSIGN     = "="
+	PLUS       = "+"
+	MINUS      = "-"
+	BANG       = "!"
+	ASTERISK   = "*"
+	SLASH      = "/"
+	BITWISEAND = "&"
+	BITWISEOR  = "|"
 
-	LESSTHAN    = "<"
-	GREATERTHEN = ">"
+	EQUAL              = "=="
+	NOTEQUAL           = "!="
+	LESSTHAN           = "<"
+	GREATERTHAN        = ">"
+	OR                 = "||"
+	AND                = "&&"
+	GREATERTHANOREQUAL = ">="
+	LESSTHANOREQUAL    = "<="
 
 	// Delimiters
 	COMMA     = ","
