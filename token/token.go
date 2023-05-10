@@ -54,6 +54,7 @@ const (
 	TRUE     = "TRUE"     // true
 	FALSE    = "FALSE"    // false
 	IF       = "IF"       // if (x < y) { return true; }
+	ELSEIF   = "ELIF"     // elif (x > y) { return false; }
 	ELSE     = "ELSE"     // else { return false; }
 	RETURN   = "RETURN"   // return 5;
 	BREAK    = "BREAK"    // break;
@@ -67,6 +68,7 @@ var keywords = map[string]TokenType{
 	"false":    FALSE,
 	"if":       IF,
 	"else":     ELSE,
+	"elif":     ELSEIF,
 	"return":   RETURN,
 	"yamete":   BREAK,
 	"continue": CONTINUE,
