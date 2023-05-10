@@ -36,6 +36,9 @@ const (
 	GREATERTHANOREQUAL = ">="
 	LESSTHANOREQUAL    = "<="
 
+	LEFTSHIFT  = "<<"
+	RIGHTSHIFT = ">>"
+
 	// Delimiters
 	COMMA     = ","
 	SEMICOLON = ";"

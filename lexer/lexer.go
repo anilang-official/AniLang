@@ -27,49 +27,43 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.ch {
 	case '=':
-		if l.peekChar() == '=' {
-			ch := l.ch
-			l.readChar()
-			literal := string(ch) + string(l.ch)
-			tok = token.Token{Type: token.EQUAL, Literal: literal}
-		} else {
-			tok = newToken(token.ASSIGN, l.ch)
-		}
+		tok = l.extraTokenCheck(
+			[]token.Token{
+				{Type: token.EQUAL, Literal: "="},
+			},
+			newToken(token.ASSIGN, l.ch),
+		)
 	case '+':
 		tok = newToken(token.PLUS, l.ch)
 	case '-':
 		tok = newToken(token.MINUS, l.ch)
 	case '!':
-		if l.peekChar() == '=' {
-			ch := l.ch
-			l.readChar()
-			literal := string(ch) + string(l.ch)
-			tok = token.Token{Type: token.NOTEQUAL, Literal: literal}
-		} else {
-			tok = newToken(token.BANG, l.ch)
-		}
+		tok = l.extraTokenCheck(
+			[]token.Token{
+				{Type: token.NOTEQUAL, Literal: "="},
+			},
+			newToken(token.BANG, l.ch),
+		)
 	case '*':
 		tok = newToken(token.ASTERISK, l.ch)
 	case '/':
 		tok = newToken(token.SLASH, l.ch)
 	case '<':
-		if l.peekChar() == '=' {
-			ch := l.ch
-			l.readChar()
-			literal := string(ch) + string(l.ch)
-			tok = token.Token{Type: token.LESSTHANOREQUAL, Literal: literal}
-		} else {
-			tok = newToken(token.LESSTHAN, l.ch)
-		}
+		tok = l.extraTokenCheck(
+			[]token.Token{
+				{Type: token.LESSTHANOREQUAL, Literal: "="},
+				{Type: token.LEFTSHIFT, Literal: "<"},
+			},
+			newToken(token.LESSTHAN, l.ch),
+		)
 	case '>':
-		if l.peekChar() == '=' {
-			ch := l.ch
-			l.readChar()
-			literal := string(ch) + string(l.ch)
-			tok = token.Token{Type: token.GREATERTHANOREQUAL, Literal: literal}
-		} else {
-			tok = newToken(token.GREATERTHAN, l.ch)
-		}
+		tok = l.extraTokenCheck(
+			[]token.Token{
+				{Type: token.GREATERTHANOREQUAL, Literal: "="},
+				{Type: token.RIGHTSHIFT, Literal: ">"},
+			},
+			newToken(token.GREATERTHAN, l.ch),
+		)
 	case ',':
 		tok = newToken(token.COMMA, l.ch)
 	case ';':
@@ -77,23 +71,19 @@ func (l *Lexer) NextToken() token.Token {
 	case ':':
 		tok = newToken(token.COLON, l.ch)
 	case '&':
-		if l.peekChar() == '&' {
-			ch := l.ch
-			l.readChar()
-			literal := string(ch) + string(l.ch)
-			tok = token.Token{Type: token.AND, Literal: literal}
-		} else {
-			tok = newToken(token.BITWISEAND, l.ch)
-		}
+		tok = l.extraTokenCheck(
+			[]token.Token{
+				{Type: token.AND, Literal: "&"},
+			},
+			newToken(token.BITWISEAND, l.ch),
+		)
 	case '|':
-		if l.peekChar() == '|' {
-			ch := l.ch
-			l.readChar()
-			literal := string(ch) + string(l.ch)
-			tok = token.Token{Type: token.OR, Literal: literal}
-		} else {
-			tok = newToken(token.BITWISEOR, l.ch)
-		}
+		tok = l.extraTokenCheck(
+			[]token.Token{
+				{Type: token.OR, Literal: "|"},
+			},
+			newToken(token.BITWISEOR, l.ch),
+		)
 	case '(':
 		tok = newToken(token.LPAREN, l.ch)
 	case ')':
@@ -127,6 +117,20 @@ func (l *Lexer) NextToken() token.Token {
 	}
 	l.readChar()
 	return tok
+}
+
+// accepts array of token.TokenType and returns true if the current token type is in the array
+func (l *Lexer) extraTokenCheck(types []token.Token, _default token.Token) token.Token {
+	ch := string(l.peekChar())
+	for _, t := range types {
+		if ch == t.Literal {
+			ch := l.ch
+			l.readChar()
+			literal := string(ch) + string(l.ch)
+			return token.Token{Type: t.Type, Literal: literal}
+		}
+	}
+	return _default
 }
 
 // newToken returns a new token.Token instance
