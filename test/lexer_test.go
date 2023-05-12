@@ -1,8 +1,9 @@
-package lexer
+package test
 
 import (
 	"testing"
 
+	"github.com/anilang-official/AniLang/lexer"
 	"github.com/anilang-official/AniLang/token"
 )
 
@@ -20,9 +21,9 @@ func TestNextToken(t *testing.T) {
 		5 < 10 > 5;
 
 		if (5 < 10) {
-			return true;
+			sayonara true;
 		} else {
-			return false;
+			sayonara false;
 		}
 		10 == 10;
 		10 != 9;
@@ -30,7 +31,7 @@ func TestNextToken(t *testing.T) {
 		"foo bar"
 		[1, 2];
 		{"foo": "bar"}
-		yamete
+		yamete;
 		continue
 	`
 
@@ -94,13 +95,13 @@ func TestNextToken(t *testing.T) {
 		{token.INT, "10"},
 		{token.RPAREN, ")"},
 		{token.LBRACE, "{"},
-		{token.RETURN, "return"},
+		{token.RETURN, "sayonara"},
 		{token.TRUE, "true"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
 		{token.ELSE, "else"},
 		{token.LBRACE, "{"},
-		{token.RETURN, "return"},
+		{token.RETURN, "sayonara"},
 		{token.FALSE, "false"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
@@ -129,11 +130,12 @@ func TestNextToken(t *testing.T) {
 		{token.STRING, "bar"},
 		{token.RBRACE, "}"},
 		{token.BREAK, "yamete"},
+		{token.SEMICOLON, ";"},
 		{token.CONTINUE, "continue"},
 		{token.EOF, ""},
 	}
 
-	l := New(input)
+	l := lexer.New(input)
 
 	for i, tt := range tests {
 		tok := l.NextToken()

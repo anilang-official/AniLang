@@ -72,7 +72,7 @@ var keywords = map[string]TokenType{
 	"if":       IF,
 	"else":     ELSE,
 	"elif":     ELSEIF,
-	"return":   RETURN,
+	"sayonara": RETURN,
 	"yamete":   BREAK,
 	"continue": CONTINUE,
 }
@@ -82,4 +82,13 @@ func LookupIdentifierType(identifier string) TokenType {
 		return tok
 	}
 	return IDENTFIER
+}
+
+func LookupTokenIdentifier(tokenType TokenType) string {
+	for identifier, tok := range keywords {
+		if tok == tokenType {
+			return identifier
+		}
+	}
+	return ""
 }
