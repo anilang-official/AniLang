@@ -33,6 +33,7 @@ func TestNextToken(t *testing.T) {
 		{"foo": "bar"}
 		yamete;
 		continue
+		[1, 2];
 	`
 
 	// Define a slice of anonymous structs to hold the expected token type and literal
@@ -132,6 +133,12 @@ func TestNextToken(t *testing.T) {
 		{token.BREAK, "yamete"},
 		{token.SEMICOLON, ";"},
 		{token.CONTINUE, "continue"},
+		{token.LBRACKET, "["},
+		{token.INT, "1"},
+		{token.COMMA, ","},
+		{token.INT, "2"},
+		{token.RBRACKET, "]"},
+		{token.SEMICOLON, ";"},
 		{token.EOF, ""},
 	}
 
