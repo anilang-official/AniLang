@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/anilang-official/AniLang/evaluator"
 	"github.com/anilang-official/AniLang/lexer"
@@ -24,11 +25,26 @@ func Start(in io.Reader, out io.Writer) {
 		if !scanned {
 			return
 		}
-		line := scanner.Text()
+		line := strings.TrimSpace(scanner.Text())
 
 		if line == ".exit" {
 			fmt.Println("Bye 👋")
 			return
+		}
+
+		if line[len(line)-1] == '{' {
+			// multiline input
+			for {
+				fmt.Print("... ")
+				scanned := scanner.Scan()
+				if !scanned {
+					return
+				}
+				line += "\n" + strings.TrimSpace(scanner.Text())
+				if line[len(line)-1] == '}' {
+					break
+				}
+			}
 		}
 
 		l := lexer.New(line)
