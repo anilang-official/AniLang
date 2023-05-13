@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/anilang-official/AniLang/evaluator"
 	"github.com/anilang-official/AniLang/lexer"
+	"github.com/anilang-official/AniLang/object"
 	"github.com/anilang-official/AniLang/parser"
 )
 
@@ -14,6 +16,8 @@ const PROMPT = ">> "
 // Start starts the REPL
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
+	env := object.NewEnvironment()
+
 	for {
 		fmt.Print(PROMPT)
 		scanned := scanner.Scan()
@@ -36,8 +40,11 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		io.WriteString(out, program.String())
-		io.WriteString(out, "\n")
+		evaluated := evaluator.Eval(program, env)
+		if evaluated != nil {
+			io.WriteString(out, evaluated.Inspect())
+			io.WriteString(out, "\n")
+		}
 	}
 }
 
