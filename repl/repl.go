@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"os"
 	"strings"
 
 	"github.com/anilang-official/AniLang/evaluator"
@@ -68,4 +69,26 @@ func printParserErrors(out io.Writer, errors []string) {
 	for _, msg := range errors {
 		io.WriteString(out, "\t"+msg+"\n")
 	}
+}
+
+func ReplFile(filename string, out io.Writer) {
+	env := object.NewEnvironment()
+
+	fileContent, err := os.ReadFile(filename)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	l := lexer.New(string(fileContent))
+	p := parser.New(l)
+
+	program := p.ParseProgram()
+	if len(p.Errors()) != 0 {
+		printParserErrors(io.Writer(os.Stderr), p.Errors())
+		return
+	}
+
+	evaluator.Eval(program, env)
+	io.WriteString(out, "\n")
 }
