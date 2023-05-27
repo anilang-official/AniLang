@@ -521,3 +521,22 @@ func TestHashIndexExpressions(t *testing.T) {
 		}
 	}
 }
+
+func TestForExpressionFunction(t *testing.T) {
+	test := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			"for (let i = 0; i < 10; let i = i + 1) { i }",
+			evaluator.NULL,
+		},
+	}
+
+	for _, tt := range test {
+		evaluated := testEval(tt.input)
+		if evaluated != tt.expected {
+			t.Errorf("expected %v, got %v", tt.expected, evaluated)
+		}
+	}
+}

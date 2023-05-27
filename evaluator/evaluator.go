@@ -29,6 +29,9 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	case *ast.IfExpression:
 		return evalIfExpression(node, env)
 
+	case *ast.ForExpression:
+		return evalForExpression(node, env)
+
 	case *ast.LetStatement:
 		val := Eval(node.Value, env)
 		if isError(val) {
@@ -273,6 +276,32 @@ func evalIfExpression(ie *ast.IfExpression, env *object.Environment) object.Obje
 	} else {
 		return NULL
 	}
+}
+
+func evalForExpression(fe *ast.ForExpression, env *object.Environment) object.Object {
+	initialization := Eval(fe.Initialization, env)
+	if isError(initialization) {
+		return initialization
+	}
+
+	condition := Eval(fe.Condition, env)
+	if isError(condition) {
+		return condition
+	}
+
+	for isTruthy(condition) {
+		Eval(fe.Consequence, env)
+		incrementordecrement := Eval(fe.IncrementOrDecrement, env)
+		if isError(incrementordecrement) {
+			return incrementordecrement
+		}
+		condition = Eval(fe.Condition, env)
+		if isError(condition) {
+			return condition
+		}
+	}
+
+	return NULL
 }
 
 func evalIdentifier(
