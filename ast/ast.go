@@ -356,3 +356,28 @@ func (hl *HashLiteral) String() string {
 
 	return out.String()
 }
+
+type ForExpression struct {
+	Token                token.Token // The 'for' token
+	Initialization       *LetStatement
+	Condition            Expression
+	IncrementOrDecrement *LetStatement
+	Consequence          *BlockStatement
+}
+
+func (fl *ForExpression) expressionNode()      {}
+func (fl *ForExpression) TokenLiteral() string { return fl.Token.Literal }
+func (fl *ForExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("for ")
+	out.WriteString(fl.Initialization.String())
+	out.WriteString("; ")
+	out.WriteString(fl.Condition.String())
+	out.WriteString("; ")
+	out.WriteString(fl.IncrementOrDecrement.String())
+	out.WriteString(" ")
+	out.WriteString(fl.Consequence.String())
+
+	return out.String()
+}

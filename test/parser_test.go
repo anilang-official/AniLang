@@ -916,3 +916,52 @@ func TestParsingArrayLiterals(t *testing.T) {
 	testInfixExpression(t, array.Elements[1], 2, "*", 2)
 	testInfixExpression(t, array.Elements[2], 3, "+", 3)
 }
+
+func TestForExpression(t *testing.T) {
+	input := `for (let i = 0; i < 10; let i = i + 1) { i }`
+	l := lexer.New(input)
+	p := parser.New(l)
+	program := p.ParseProgram()
+
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program.Statements does not contain 1 statements. got=%d", len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("exp not ast.ExpressionStatement. got=%T", program.Statements[0])
+	}
+
+	forExp, ok := stmt.Expression.(*ast.ForExpression)
+	if !ok {
+		t.Fatalf("exp not ast.ForExpression. got=%T", stmt.Expression)
+	}
+
+	if !testLetStatement(t, forExp.Initialization, "i") {
+		return
+	}
+
+	if !testInfixExpression(t, forExp.Condition, "i", "<", 10) {
+		return
+	}
+
+	if !testLetStatement(t, forExp.IncrementOrDecrement, "i") {
+		return
+	}
+
+	if len(forExp.Consequence.Statements) != 1 {
+		t.Fatalf("forExp.Body.Statements does not contain 1 statements. got=%d", len(forExp.Consequence.Statements))
+	}
+
+	consequence, ok := forExp.Consequence.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("stmt not ast.ExpressionStatement. got=%T", forExp.Consequence.Statements[0])
+	}
+
+	if !testIdentifier(t, consequence.Expression, "i") {
+		return
+	}
+
+}
