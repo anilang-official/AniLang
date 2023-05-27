@@ -159,10 +159,11 @@ func (oe *InfixExpression) String() string {
 }
 
 type IfExpression struct {
-	Token       token.Token // The 'if' token
-	Condition   Expression
-	Consequence *BlockStatement
-	Alternative *BlockStatement
+	Token             token.Token // The 'if' token
+	Condition         Expression
+	Consequence       *BlockStatement
+	ElseIfConsequence []*ElseIfExpression
+	Alternative       *BlockStatement
 }
 
 func (ie *IfExpression) expressionNode()      {}
@@ -175,10 +176,33 @@ func (ie *IfExpression) String() string {
 	out.WriteString(" ")
 	out.WriteString(ie.Consequence.String())
 
+	for _, eif := range ie.ElseIfConsequence {
+		out.WriteString(eif.String())
+	}
+
 	if ie.Alternative != nil {
 		out.WriteString("else ")
 		out.WriteString(ie.Alternative.String())
 	}
+
+	return out.String()
+}
+
+type ElseIfExpression struct {
+	Token       token.Token // The 'else if' token
+	Condition   Expression
+	Consequence *BlockStatement
+}
+
+func (ie *ElseIfExpression) expressionNode()      {}
+func (ie *ElseIfExpression) TokenLiteral() string { return ie.Token.Literal }
+func (ie *ElseIfExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("elif ")
+	out.WriteString(ie.Condition.String())
+	out.WriteString(" ")
+	out.WriteString(ie.Consequence.String())
 
 	return out.String()
 }

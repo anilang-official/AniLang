@@ -417,6 +417,78 @@ func TestIfElseExpression(t *testing.T) {
 	}
 }
 
+func TestIfElseIfExpression(t *testing.T) {
+	input := `if (x < y) { x } elif (y < z) { y } else { z }`
+
+	program := createParseProgram(input, t)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program.Body does not contain %d statements. got=%d\n",
+			1, len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not %T. got=%T", &ast.ExpressionStatement{},
+			program.Statements[0])
+	}
+
+	exp, ok := stmt.Expression.(*ast.IfExpression)
+	if !ok {
+		t.Fatalf("stmt.Expression is not %T. got=%T", &ast.IfExpression{}, stmt.Expression)
+	}
+
+	if !testInfixExpression(t, exp.Condition, "x", "<", "y") {
+		return
+	}
+
+	if len(exp.Consequence.Statements) != 1 {
+		t.Errorf("consequence is not 1 statements. got=%d\n",
+			len(exp.Consequence.Statements))
+	}
+
+	consequence, ok := exp.Consequence.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("Statements[0] is not %T. got=%T", &ast.ExpressionStatement{},
+			exp.Consequence.Statements[0])
+	}
+
+	if !testIdentifier(t, consequence.Expression, "x") {
+		return
+	}
+
+	elseExpression := exp.ElseIfConsequence[0].Condition
+	fmt.Println(elseExpression)
+	if !testInfixExpression(t, elseExpression, "y", "<", "z") {
+		return
+	}
+
+	elseifconsequence, ok := exp.ElseIfConsequence[0].Consequence.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("Statements[0] is not %T. got=%T", &ast.ExpressionStatement{},
+			elseifconsequence.Expression)
+	}
+
+	if !testIdentifier(t, elseifconsequence.Expression, "y") {
+		return
+	}
+
+	if len(exp.Alternative.Statements) != 1 {
+		t.Errorf("exp.Alternative.Statements does not contain 1 statements. got=%d\n",
+			len(exp.Alternative.Statements))
+	}
+
+	alternative, ok := exp.Alternative.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("Statements[0] is not %T. got=%T", &ast.ExpressionStatement{},
+			exp.Alternative.Statements[0])
+	}
+
+	if !testIdentifier(t, alternative.Expression, "z") {
+		return
+	}
+}
+
 func TestFunctionLiteralParsing(t *testing.T) {
 	input := `fn(x, y) { x + y; }`
 

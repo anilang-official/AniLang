@@ -261,7 +261,13 @@ func (p *Parser) parseIfExpression() ast.Expression {
 
 	expression.Consequence = p.parseBlockStatement()
 
-	// TODO parse else if
+	//TODO: parse elif
+	for p.peekTokenIs(token.ELSEIF) {
+		p.nextToken()
+
+		expression.ElseIfConsequence = append(expression.ElseIfConsequence, p.parseElseIfStatement())
+	}
+
 	if p.peekTokenIs(token.ELSE) {
 		p.nextToken()
 
@@ -273,6 +279,30 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	}
 
 	return expression
+}
+
+func (p *Parser) parseElseIfStatement() *ast.ElseIfExpression {
+	stmt := &ast.ElseIfExpression{Token: p.currentToken}
+
+	if !p.expectPeek(token.LPAREN) {
+		return nil
+	}
+
+	// get condition
+	p.nextToken()
+	stmt.Condition = p.parseExpression(Lowest)
+
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+
+	if !p.expectPeek(token.LBRACE) {
+		return nil
+	}
+
+	stmt.Consequence = p.parseBlockStatement()
+
+	return stmt
 }
 
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {
