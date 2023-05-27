@@ -254,6 +254,20 @@ func evalIfExpression(ie *ast.IfExpression, env *object.Environment) object.Obje
 
 	if isTruthy(condition) {
 		return Eval(ie.Consequence, env)
+	} else if ie.ElseIfConsequence != nil && len(ie.ElseIfConsequence) > 0 {
+		for _, elseif := range ie.ElseIfConsequence {
+			elseifCondition := Eval(elseif.Condition, env)
+			if isError(elseifCondition) {
+				return elseifCondition
+			}
+			if isTruthy(elseifCondition) {
+				return Eval(elseif.Consequence, env)
+			}
+		}
+		if ie.Alternative != nil {
+			return Eval(ie.Alternative, env)
+		}
+		return NULL
 	} else if ie.Alternative != nil {
 		return Eval(ie.Alternative, env)
 	} else {
