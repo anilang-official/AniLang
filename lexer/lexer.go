@@ -34,9 +34,21 @@ func (l *Lexer) NextToken() token.Token {
 			newToken(token.ASSIGN, l.ch),
 		)
 	case '+':
-		tok = newToken(token.PLUS, l.ch)
+		tok = l.extraTokenCheck(
+			[]token.Token{
+				{Type: token.INCREMENT, Literal: "+"},
+				{Type: token.PLUSEQUAL, Literal: "="},
+			},
+			newToken(token.PLUS, l.ch),
+		)
 	case '-':
-		tok = newToken(token.MINUS, l.ch)
+		tok = l.extraTokenCheck(
+			[]token.Token{
+				{Type: token.DECREMENT, Literal: "-"},
+				{Type: token.MINUSEQUAL, Literal: "="},
+			},
+			newToken(token.MINUS, l.ch),
+		)
 	case '!':
 		tok = l.extraTokenCheck(
 			[]token.Token{
@@ -45,9 +57,20 @@ func (l *Lexer) NextToken() token.Token {
 			newToken(token.BANG, l.ch),
 		)
 	case '*':
-		tok = newToken(token.ASTERISK, l.ch)
+		tok = l.extraTokenCheck(
+			[]token.Token{
+				{Type: token.POW, Literal: "*"},
+				{Type: token.MULTIPLYEQUAL, Literal: "="},
+			},
+			newToken(token.ASTERISK, l.ch),
+		)
 	case '/':
-		tok = newToken(token.SLASH, l.ch)
+		tok = l.extraTokenCheck(
+			[]token.Token{
+				{Type: token.DIVIDEEQUAL, Literal: "="},
+			},
+			newToken(token.SLASH, l.ch),
+		)
 	case '<':
 		tok = l.extraTokenCheck(
 			[]token.Token{
@@ -74,6 +97,7 @@ func (l *Lexer) NextToken() token.Token {
 		tok = l.extraTokenCheck(
 			[]token.Token{
 				{Type: token.AND, Literal: "&"},
+				{Type: token.BITWISEANDEQUAL, Literal: "="},
 			},
 			newToken(token.BITWISEAND, l.ch),
 		)
@@ -81,8 +105,23 @@ func (l *Lexer) NextToken() token.Token {
 		tok = l.extraTokenCheck(
 			[]token.Token{
 				{Type: token.OR, Literal: "|"},
+				{Type: token.BITWISEOREQUAL, Literal: "="},
 			},
 			newToken(token.BITWISEOR, l.ch),
+		)
+	case '%':
+		tok = l.extraTokenCheck(
+			[]token.Token{
+				{Type: token.MODULOEQUAL, Literal: "="},
+			},
+			newToken(token.MODULO, l.ch),
+		)
+	case '^':
+		tok = l.extraTokenCheck(
+			[]token.Token{
+				{Type: token.BITWISEXOREQUAL, Literal: "="},
+			},
+			newToken(token.BITWISEXOR, l.ch),
 		)
 	case '(':
 		tok = newToken(token.LPAREN, l.ch)

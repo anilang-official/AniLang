@@ -26,7 +26,10 @@ const (
 	SLASH      = "/"
 	BITWISEAND = "&"
 	BITWISEOR  = "|"
+	MODULO     = "%"
+	BITWISEXOR = "^"
 
+	// Comparison operators
 	EQUAL              = "=="
 	NOTEQUAL           = "!="
 	LESSTHAN           = "<"
@@ -38,6 +41,21 @@ const (
 
 	LEFTSHIFT  = "<<"
 	RIGHTSHIFT = ">>"
+
+	// Increment/decrement operators
+	INCREMENT = "++"
+	DECREMENT = "--"
+
+	// Assignment operators
+	PLUSEQUAL       = "+="
+	MINUSEQUAL      = "-="
+	MULTIPLYEQUAL   = "*="
+	DIVIDEEQUAL     = "/="
+	BITWISEANDEQUAL = "&="
+	BITWISEOREQUAL  = "|="
+	MODULOEQUAL     = "%="
+	BITWISEXOREQUAL = "^="
+	POW             = "**"
 
 	// Delimiters
 	COMMA     = ","
@@ -62,6 +80,8 @@ const (
 	RETURN   = "RETURN"   // return 5;
 	BREAK    = "BREAK"    // break;
 	CONTINUE = "CONTINUE" // continue;
+	WHILE    = "WHILE"    // while (x < y) { return true; }
+	FOR      = "FOR"      // for (i = 0; i < 10; i++) { return true; }
 )
 
 var keywords = map[string]TokenType{
@@ -75,6 +95,8 @@ var keywords = map[string]TokenType{
 	"sayonara": RETURN,
 	"yamete":   BREAK,
 	"continue": CONTINUE,
+	"while":    WHILE,
+	"for":      FOR,
 }
 
 func LookupIdentifierType(identifier string) TokenType {

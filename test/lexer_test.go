@@ -34,6 +34,13 @@ func TestNextToken(t *testing.T) {
 		yamete;
 		continue
 		[1, 2];
+		for(let i = 0; i < 10; i++) {
+			sayonara true;
+		}
+		while(i < 10) {
+			sayonara true;
+			let i = i + 1;
+		}
 	`
 
 	// Define a slice of anonymous structs to hold the expected token type and literal
@@ -139,6 +146,43 @@ func TestNextToken(t *testing.T) {
 		{token.INT, "2"},
 		{token.RBRACKET, "]"},
 		{token.SEMICOLON, ";"},
+		{token.FOR, "for"},
+		{token.LPAREN, "("},
+		{token.LET, "let"},
+		{token.IDENTFIER, "i"},
+		{token.ASSIGN, "="},
+		{token.INT, "0"},
+		{token.SEMICOLON, ";"},
+		{token.IDENTFIER, "i"},
+		{token.LESSTHAN, "<"},
+		{token.INT, "10"},
+		{token.SEMICOLON, ";"},
+		{token.IDENTFIER, "i"},
+		{token.INCREMENT, "++"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "sayonara"},
+		{token.TRUE, "true"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.WHILE, "while"},
+		{token.LPAREN, "("},
+		{token.IDENTFIER, "i"},
+		{token.LESSTHAN, "<"},
+		{token.INT, "10"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "sayonara"},
+		{token.TRUE, "true"},
+		{token.SEMICOLON, ";"},
+		{token.LET, "let"},
+		{token.IDENTFIER, "i"},
+		{token.ASSIGN, "="},
+		{token.IDENTFIER, "i"},
+		{token.PLUS, "+"},
+		{token.INT, "1"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
 		{token.EOF, ""},
 	}
 
