@@ -98,7 +98,21 @@ type String struct {
 }
 
 func (s *String) Type() ObjectType { return STRING_OBJ }
-func (s *String) Inspect() string  { return s.Value }
+func (s *String) Inspect() string {
+	s.Value = strings.Replace(s.Value, `\n`, "\n", -1)
+	s.Value = strings.Replace(s.Value, `\t`, "\t", -1)
+	s.Value = strings.Replace(s.Value, `\r`, "\r", -1)
+	s.Value = strings.Replace(s.Value, `\"`, "\"", -1)
+	s.Value = strings.Replace(s.Value, `\'`, "'", -1)
+	s.Value = strings.Replace(s.Value, `\\`, "\\", -1)
+	s.Value = strings.Replace(s.Value, `\0`, "\x00", -1)
+	s.Value = strings.Replace(s.Value, `\a`, "\a", -1)
+	s.Value = strings.Replace(s.Value, `\b`, "\b", -1)
+	s.Value = strings.Replace(s.Value, `\f`, "\f", -1)
+	s.Value = strings.Replace(s.Value, `\v`, "\v", -1)
+	s.Value = strings.Replace(s.Value, `\?`, "?", -1)
+	return s.Value
+}
 
 type Array struct {
 	Elements []Object

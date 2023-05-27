@@ -187,6 +187,14 @@ func (l *Lexer) readString() string {
 	pos := l.position + 1
 	for {
 		l.readChar()
+		// continue if l.ch == \"
+		if l.ch == '\\' {
+			l.readChar()
+			if l.ch == '"' {
+				continue
+			}
+		}
+
 		if l.ch == '"' || l.ch == 0 {
 			break
 		}
