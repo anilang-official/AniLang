@@ -254,7 +254,7 @@ func evalLetStatement(let *ast.LetStatement, env *object.Environment) object.Obj
 
 	if let.Assignment.Type == token.ASSIGN {
 		env.Set(let.Name.Value, val)
-	} else if let.Assignment.Type == token.PLUSEQUAL {
+	} else if let.Assignment.Type == token.PLUSEQUAL && val.Type() == "INTEGER" {
 		object, ok := env.Get(let.Name.Value)
 
 		if !ok {
@@ -263,7 +263,7 @@ func evalLetStatement(let *ast.LetStatement, env *object.Environment) object.Obj
 			env.Set(let.Name.Value, evalInfixExpression("+", object, val))
 		}
 
-	} else if let.Assignment.Type == token.MINUSEQUAL {
+	} else if let.Assignment.Type == token.MINUSEQUAL && val.Type() == "INTEGER" {
 		object, ok := env.Get(let.Name.Value)
 
 		if !ok {
@@ -272,7 +272,7 @@ func evalLetStatement(let *ast.LetStatement, env *object.Environment) object.Obj
 			env.Set(let.Name.Value, evalInfixExpression("-", object, val))
 		}
 
-	} else if let.Assignment.Type == token.MULTIPLYEQUAL {
+	} else if let.Assignment.Type == token.MULTIPLYEQUAL && val.Type() == "INTEGER" {
 		object, ok := env.Get(let.Name.Value)
 
 		if !ok {
@@ -281,7 +281,7 @@ func evalLetStatement(let *ast.LetStatement, env *object.Environment) object.Obj
 			env.Set(let.Name.Value, evalInfixExpression("*", object, val))
 		}
 
-	} else if let.Assignment.Type == token.DIVIDEEQUAL {
+	} else if let.Assignment.Type == token.DIVIDEEQUAL && val.Type() == "INTEGER" {
 		object, ok := env.Get(let.Name.Value)
 
 		if !ok {
@@ -290,7 +290,7 @@ func evalLetStatement(let *ast.LetStatement, env *object.Environment) object.Obj
 			env.Set(let.Name.Value, evalInfixExpression("/", object, val))
 		}
 
-	} else if let.Assignment.Type == token.BITWISEANDEQUAL {
+	} else if let.Assignment.Type == token.BITWISEANDEQUAL && val.Type() == "INTEGER" {
 		object, ok := env.Get(let.Name.Value)
 
 		if !ok {
@@ -299,7 +299,7 @@ func evalLetStatement(let *ast.LetStatement, env *object.Environment) object.Obj
 			env.Set(let.Name.Value, evalInfixExpression("&", object, val))
 		}
 
-	} else if let.Assignment.Type == token.BITWISEOREQUAL {
+	} else if let.Assignment.Type == token.BITWISEOREQUAL && val.Type() == "INTEGER" {
 		object, ok := env.Get(let.Name.Value)
 
 		if !ok {
@@ -308,7 +308,7 @@ func evalLetStatement(let *ast.LetStatement, env *object.Environment) object.Obj
 			env.Set(let.Name.Value, evalInfixExpression("|", object, val))
 		}
 
-	} else if let.Assignment.Type == token.MODULOEQUAL {
+	} else if let.Assignment.Type == token.MODULOEQUAL && val.Type() == "INTEGER" {
 		object, ok := env.Get(let.Name.Value)
 
 		if !ok {
@@ -317,7 +317,7 @@ func evalLetStatement(let *ast.LetStatement, env *object.Environment) object.Obj
 			env.Set(let.Name.Value, evalInfixExpression("%", object, val))
 		}
 
-	} else if let.Assignment.Type == token.BITWISEXOREQUAL {
+	} else if let.Assignment.Type == token.BITWISEXOREQUAL && val.Type() == "INTEGER" {
 		object, ok := env.Get(let.Name.Value)
 
 		if !ok {
