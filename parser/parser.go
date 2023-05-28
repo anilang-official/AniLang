@@ -400,6 +400,10 @@ func (p *Parser) parseForExpression() ast.Expression {
 
 	// get condition
 	p.nextToken()
+	if !p.currentTokenIs(token.LET) {
+		p.peekError(token.LET)
+		return nil
+	}
 	expression.Initialization = p.parseLetStatement()
 	if expression.Initialization.Assignment.Literal != token.ASSIGN {
 		p.peekError(token.ASSIGN)
@@ -416,6 +420,11 @@ func (p *Parser) parseForExpression() ast.Expression {
 
 	// get condition
 	p.nextToken()
+	if !p.currentTokenIs(token.LET) {
+		p.peekError(token.LET)
+		return nil
+	}
+
 	expression.IncrementOrDecrement = p.parseLetStatement()
 	if expression.IncrementOrDecrement.Assignment.Literal == token.ASSIGN {
 		msg := fmt.Sprintf("not expecting next token to be %s", token.ASSIGN)
