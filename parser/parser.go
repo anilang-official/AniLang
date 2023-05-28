@@ -146,13 +146,21 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 		stmt.Assignment = token.Token{Type: token.MODULOEQUAL, Literal: "%="}
 	} else if p.expectPeekNoError(token.BITWISEXOREQUAL) {
 		stmt.Assignment = token.Token{Type: token.BITWISEXOREQUAL, Literal: "^="}
+	} else if p.expectPeekNoError(token.INCREMENT) {
+		stmt.Assignment = token.Token{Type: token.INCREMENT, Literal: "++"}
+	} else if p.expectPeekNoError(token.DECREMENT) {
+		stmt.Assignment = token.Token{Type: token.DECREMENT, Literal: "--"}
 	} else {
 		return nil
 	}
 
 	// get value
 	p.nextToken()
-	stmt.Value = p.parseExpression(Lowest)
+	if stmt.Assignment.Type == token.INCREMENT || stmt.Assignment.Type == token.DECREMENT {
+		stmt.Value = nil
+	} else {
+		stmt.Value = p.parseExpression(Lowest)
+	}
 
 	if p.peekTokenIs(token.SEMICOLON) {
 		p.nextToken()

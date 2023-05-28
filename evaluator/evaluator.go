@@ -247,6 +247,10 @@ func evalStringInfixExpression(
 }
 
 func evalLetStatement(let *ast.LetStatement, env *object.Environment) object.Object {
+	if let.Assignment.Type == token.INCREMENT || let.Assignment.Type == token.DECREMENT {
+		return evalIncrementDecrement(let, env)
+	}
+
 	val := Eval(let.Value, env)
 	if isError(val) {
 		return val
@@ -255,81 +259,99 @@ func evalLetStatement(let *ast.LetStatement, env *object.Environment) object.Obj
 	if let.Assignment.Type == token.ASSIGN {
 		env.Set(let.Name.Value, val)
 	} else if let.Assignment.Type == token.PLUSEQUAL && val.Type() == object.INTEGER_OBJ {
-		object, ok := env.Get(let.Name.Value)
+		obj, ok := env.Get(let.Name.Value)
 
 		if !ok {
 			env.Set(let.Name.Value, val)
 		} else {
-			env.Set(let.Name.Value, evalInfixExpression("+", object, val))
+			env.Set(let.Name.Value, evalInfixExpression("+", obj, val))
 		}
 
 	} else if let.Assignment.Type == token.MINUSEQUAL && val.Type() == object.INTEGER_OBJ {
-		object, ok := env.Get(let.Name.Value)
+		obj, ok := env.Get(let.Name.Value)
 
 		if !ok {
 			env.Set(let.Name.Value, val)
 		} else {
-			env.Set(let.Name.Value, evalInfixExpression("-", object, val))
+			env.Set(let.Name.Value, evalInfixExpression("-", obj, val))
 		}
 
 	} else if let.Assignment.Type == token.MULTIPLYEQUAL && val.Type() == object.INTEGER_OBJ {
-		object, ok := env.Get(let.Name.Value)
+		obj, ok := env.Get(let.Name.Value)
 
 		if !ok {
 			env.Set(let.Name.Value, val)
 		} else {
-			env.Set(let.Name.Value, evalInfixExpression("*", object, val))
+			env.Set(let.Name.Value, evalInfixExpression("*", obj, val))
 		}
 
 	} else if let.Assignment.Type == token.DIVIDEEQUAL && val.Type() == object.INTEGER_OBJ {
-		object, ok := env.Get(let.Name.Value)
+		obj, ok := env.Get(let.Name.Value)
 
 		if !ok {
 			env.Set(let.Name.Value, val)
 		} else {
-			env.Set(let.Name.Value, evalInfixExpression("/", object, val))
+			env.Set(let.Name.Value, evalInfixExpression("/", obj, val))
 		}
 
 	} else if let.Assignment.Type == token.BITWISEANDEQUAL && val.Type() == object.INTEGER_OBJ {
-		object, ok := env.Get(let.Name.Value)
+		obj, ok := env.Get(let.Name.Value)
 
 		if !ok {
 			env.Set(let.Name.Value, val)
 		} else {
-			env.Set(let.Name.Value, evalInfixExpression("&", object, val))
+			env.Set(let.Name.Value, evalInfixExpression("&", obj, val))
 		}
 
 	} else if let.Assignment.Type == token.BITWISEOREQUAL && val.Type() == object.INTEGER_OBJ {
-		object, ok := env.Get(let.Name.Value)
+		obj, ok := env.Get(let.Name.Value)
 
 		if !ok {
 			env.Set(let.Name.Value, val)
 		} else {
-			env.Set(let.Name.Value, evalInfixExpression("|", object, val))
+			env.Set(let.Name.Value, evalInfixExpression("|", obj, val))
 		}
 
 	} else if let.Assignment.Type == token.MODULOEQUAL && val.Type() == object.INTEGER_OBJ {
-		object, ok := env.Get(let.Name.Value)
+		obj, ok := env.Get(let.Name.Value)
 
 		if !ok {
 			env.Set(let.Name.Value, val)
 		} else {
-			env.Set(let.Name.Value, evalInfixExpression("%", object, val))
+			env.Set(let.Name.Value, evalInfixExpression("%", obj, val))
 		}
 
 	} else if let.Assignment.Type == token.BITWISEXOREQUAL && val.Type() == object.INTEGER_OBJ {
-		object, ok := env.Get(let.Name.Value)
+		obj, ok := env.Get(let.Name.Value)
 
 		if !ok {
 			env.Set(let.Name.Value, val)
 		} else {
-			env.Set(let.Name.Value, evalInfixExpression("^", object, val))
+			env.Set(let.Name.Value, evalInfixExpression("^", obj, val))
 		}
 
 	} else {
 		return newError("unknown operator: %s", let.Assignment.Type)
 	}
 
+	return nil
+}
+
+func evalIncrementDecrement(let *ast.LetStatement, env *object.Environment) object.Object {
+	obj, ok := env.Get(let.Name.Value)
+	if !ok {
+		return newError("unknown variable: %s", let.Name.Value)
+	}
+
+	if obj.Type() != object.INTEGER_OBJ {
+		return newError("unknown operator: %s %s", let.Assignment.Type, obj.Type())
+	}
+
+	if let.Assignment.Type == token.INCREMENT {
+		env.Set(let.Name.Value, &object.Integer{Value: obj.(*object.Integer).Value + 1})
+	} else {
+		env.Set(let.Name.Value, &object.Integer{Value: obj.(*object.Integer).Value - 1})
+	}
 	return nil
 }
 
