@@ -16,6 +16,7 @@ func TestString(t *testing.T) {
 					Token: token.Token{Type: token.IDENTFIER, Literal: "mayVar"},
 					Value: "myVar",
 				},
+				Assignment: token.Token{Type: token.ASSIGN, Literal: "="},
 				Value: &ast.Identifier{
 					Token: token.Token{Type: token.IDENTFIER, Literal: "anotherVar"},
 					Value: "anotherVar",

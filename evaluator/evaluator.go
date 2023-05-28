@@ -5,6 +5,7 @@ import (
 
 	"github.com/anilang-official/AniLang/ast"
 	"github.com/anilang-official/AniLang/object"
+	"github.com/anilang-official/AniLang/token"
 )
 
 var (
@@ -33,11 +34,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalForExpression(node, env)
 
 	case *ast.LetStatement:
-		val := Eval(node.Value, env)
-		if isError(val) {
-			return val
-		}
-		env.Set(node.Name.Value, val)
+		return evalLetStatement(node, env)
 
 	case *ast.ReturnStatement:
 		val := Eval(node.ReturnValue, env)
@@ -247,6 +244,93 @@ func evalStringInfixExpression(
 	leftVal := left.(*object.String).Value
 	rightVal := right.(*object.String).Value
 	return &object.String{Value: leftVal + rightVal}
+}
+
+func evalLetStatement(let *ast.LetStatement, env *object.Environment) object.Object {
+	val := Eval(let.Value, env)
+	if isError(val) {
+		return val
+	}
+
+	if let.Assignment.Type == token.ASSIGN {
+		env.Set(let.Name.Value, val)
+	} else if let.Assignment.Type == token.PLUSEQUAL {
+		object, ok := env.Get(let.Name.Value)
+
+		if !ok {
+			env.Set(let.Name.Value, val)
+		} else {
+			env.Set(let.Name.Value, evalInfixExpression("+", object, val))
+		}
+
+	} else if let.Assignment.Type == token.MINUSEQUAL {
+		object, ok := env.Get(let.Name.Value)
+
+		if !ok {
+			env.Set(let.Name.Value, val)
+		} else {
+			env.Set(let.Name.Value, evalInfixExpression("-", object, val))
+		}
+
+	} else if let.Assignment.Type == token.MULTIPLYEQUAL {
+		object, ok := env.Get(let.Name.Value)
+
+		if !ok {
+			env.Set(let.Name.Value, val)
+		} else {
+			env.Set(let.Name.Value, evalInfixExpression("*", object, val))
+		}
+
+	} else if let.Assignment.Type == token.DIVIDEEQUAL {
+		object, ok := env.Get(let.Name.Value)
+
+		if !ok {
+			env.Set(let.Name.Value, val)
+		} else {
+			env.Set(let.Name.Value, evalInfixExpression("/", object, val))
+		}
+
+	} else if let.Assignment.Type == token.BITWISEANDEQUAL {
+		object, ok := env.Get(let.Name.Value)
+
+		if !ok {
+			env.Set(let.Name.Value, val)
+		} else {
+			env.Set(let.Name.Value, evalInfixExpression("&", object, val))
+		}
+
+	} else if let.Assignment.Type == token.BITWISEOREQUAL {
+		object, ok := env.Get(let.Name.Value)
+
+		if !ok {
+			env.Set(let.Name.Value, val)
+		} else {
+			env.Set(let.Name.Value, evalInfixExpression("|", object, val))
+		}
+
+	} else if let.Assignment.Type == token.MODULOEQUAL {
+		object, ok := env.Get(let.Name.Value)
+
+		if !ok {
+			env.Set(let.Name.Value, val)
+		} else {
+			env.Set(let.Name.Value, evalInfixExpression("%", object, val))
+		}
+
+	} else if let.Assignment.Type == token.BITWISEXOREQUAL {
+		object, ok := env.Get(let.Name.Value)
+
+		if !ok {
+			env.Set(let.Name.Value, val)
+		} else {
+			env.Set(let.Name.Value, evalInfixExpression("^", object, val))
+		}
+
+	} else {
+		return newError("unknown operator: %s", let.Assignment.Type)
+	}
+
+	return nil
 }
 
 func evalIfExpression(ie *ast.IfExpression, env *object.Environment) object.Object {

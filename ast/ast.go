@@ -62,9 +62,10 @@ func (bs *BlockStatement) String() string {
 }
 
 type LetStatement struct {
-	Token token.Token // the token.Let token
-	Name  *Identifier
-	Value Expression
+	Token      token.Token // the token.Let token
+	Name       *Identifier
+	Assignment token.Token
+	Value      Expression
 }
 
 func (ls *LetStatement) statementNode()       {}
@@ -74,7 +75,7 @@ func (ls *LetStatement) String() string {
 
 	out.WriteString(ls.TokenLiteral() + " ")
 	out.WriteString(ls.Name.String())
-	out.WriteString(" = ")
+	out.WriteString(" " + ls.Assignment.Literal + " ")
 
 	if ls.Value != nil {
 		out.WriteString(ls.Value.String())

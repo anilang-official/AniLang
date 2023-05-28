@@ -128,7 +128,25 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 
 	stmt.Name = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
 
-	if !p.expectPeek(token.ASSIGN) {
+	if p.expectPeekNoError(token.ASSIGN) {
+		stmt.Assignment = token.Token{Type: token.ASSIGN, Literal: "="}
+	} else if p.expectPeekNoError(token.PLUSEQUAL) {
+		stmt.Assignment = token.Token{Type: token.PLUSEQUAL, Literal: "+="}
+	} else if p.expectPeekNoError(token.MINUSEQUAL) {
+		stmt.Assignment = token.Token{Type: token.MINUSEQUAL, Literal: "-="}
+	} else if p.expectPeekNoError(token.MULTIPLYEQUAL) {
+		stmt.Assignment = token.Token{Type: token.MULTIPLYEQUAL, Literal: "*="}
+	} else if p.expectPeekNoError(token.DIVIDEEQUAL) {
+		stmt.Assignment = token.Token{Type: token.DIVIDEEQUAL, Literal: "/="}
+	} else if p.expectPeekNoError(token.BITWISEANDEQUAL) {
+		stmt.Assignment = token.Token{Type: token.BITWISEANDEQUAL, Literal: "&="}
+	} else if p.expectPeekNoError(token.BITWISEOREQUAL) {
+		stmt.Assignment = token.Token{Type: token.BITWISEOREQUAL, Literal: "|="}
+	} else if p.expectPeekNoError(token.MODULOEQUAL) {
+		stmt.Assignment = token.Token{Type: token.MODULOEQUAL, Literal: "%="}
+	} else if p.expectPeekNoError(token.BITWISEXOREQUAL) {
+		stmt.Assignment = token.Token{Type: token.BITWISEXOREQUAL, Literal: "^="}
+	} else {
 		return nil
 	}
 
@@ -517,6 +535,15 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 		return true
 	} else {
 		p.peekError(t)
+		return false
+	}
+}
+
+func (p *Parser) expectPeekNoError(t token.TokenType) bool {
+	if p.peekTokenIs(t) {
+		p.nextToken()
+		return true
+	} else {
 		return false
 	}
 }
