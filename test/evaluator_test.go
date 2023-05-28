@@ -528,7 +528,7 @@ func TestForExpressionFunction(t *testing.T) {
 		expected interface{}
 	}{
 		{
-			"for (let i = 0; i < 10; let i = i + 1) { i }",
+			"for (let i = 0; i < 10; let i += 1) { i }",
 			evaluator.NULL,
 		},
 	}

@@ -458,7 +458,6 @@ func TestIfElseIfExpression(t *testing.T) {
 	}
 
 	elseExpression := exp.ElseIfConsequence[0].Condition
-	fmt.Println(elseExpression)
 	if !testInfixExpression(t, elseExpression, "y", "<", "z") {
 		return
 	}
@@ -918,7 +917,7 @@ func TestParsingArrayLiterals(t *testing.T) {
 }
 
 func TestForExpression(t *testing.T) {
-	input := `for (let i = 0; i < 10; let i = i + 1) { i }`
+	input := `for (let i = 0; i < 10; let i += 1) { i }`
 	l := lexer.New(input)
 	p := parser.New(l)
 	program := p.ParseProgram()

@@ -369,6 +369,10 @@ func (p *Parser) parseForExpression() ast.Expression {
 	// get condition
 	p.nextToken()
 	expression.Initialization = p.parseLetStatement()
+	if expression.Initialization.Assignment.Type != token.ASSIGN {
+		p.peekError(token.ASSIGN)
+		return nil
+	}
 
 	// get condition
 	p.nextToken()
@@ -381,6 +385,11 @@ func (p *Parser) parseForExpression() ast.Expression {
 	// get condition
 	p.nextToken()
 	expression.IncrementOrDecrement = p.parseLetStatement()
+	if expression.IncrementOrDecrement.Assignment.Type == token.ASSIGN {
+		msg := fmt.Sprintf("not expecting next token to be %s", token.ASSIGN)
+		p.errors = append(p.errors, msg)
+		return nil
+	}
 
 	if !p.expectPeek(token.RPAREN) {
 		return nil
