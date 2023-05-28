@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/anilang-official/AniLang/ast"
+	"github.com/anilang-official/AniLang/token"
 )
 
 type ObjectType string
@@ -25,6 +26,7 @@ const (
 	ARRAY_OBJ        = "ARRAY"
 	HASH_OBJ         = "HASH"
 	BREAK_OBJ        = "BREAK"
+	CONTINUE_OBJ     = "CONTINUE"
 )
 
 type Object interface {
@@ -68,7 +70,12 @@ func (rv *ReturnValue) Inspect() string  { return rv.Value.Inspect() }
 type Break struct{}
 
 func (b *Break) Type() ObjectType { return BREAK_OBJ }
-func (b *Break) Inspect() string  { return "break;" }
+func (b *Break) Inspect() string  { return token.LookupTokenIdentifier(token.BREAK) }
+
+type Continue struct{}
+
+func (c *Continue) Type() ObjectType { return CONTINUE_OBJ }
+func (c *Continue) Inspect() string  { return token.LookupTokenIdentifier(token.CONTINUE) }
 
 type Error struct {
 	Message string

@@ -120,6 +120,21 @@ func (be *BreakStatement) String() string {
 	return out.String()
 }
 
+type ContinueStatement struct {
+	Token token.Token // The 'continue' token
+}
+
+func (ce *ContinueStatement) statementNode()       {}
+func (ce *ContinueStatement) TokenLiteral() string { return ce.Token.Literal }
+func (ce *ContinueStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(ce.Token.Literal)
+	out.WriteString(token.SEMICOLON)
+
+	return out.String()
+}
+
 type ExpressionStatement struct {
 	Token      token.Token // the first token of the expression
 	Expression Expression

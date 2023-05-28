@@ -46,6 +46,9 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	case *ast.BreakStatement:
 		return &object.Break{}
 
+	case *ast.ContinueStatement:
+		return &object.Continue{}
+
 	case *ast.FunctionLiteral:
 		params := node.Parameters
 		body := node.Body
@@ -145,7 +148,7 @@ func evalBlockStatement(block *ast.BlockStatement, env *object.Environment) obje
 		result = Eval(statement, env)
 		if result != nil {
 			rt := result.Type()
-			if rt == object.RETURN_VALUE_OBJ || rt == object.ERROR_OBJ || rt == object.BREAK_OBJ {
+			if rt == object.RETURN_VALUE_OBJ || rt == object.ERROR_OBJ || rt == object.BREAK_OBJ || rt == object.CONTINUE_OBJ {
 				return result
 			}
 		}
