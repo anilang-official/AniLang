@@ -43,6 +43,9 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return &object.ReturnValue{Value: val}
 
+	case *ast.BreakStatement:
+		return &object.Break{}
+
 	case *ast.FunctionLiteral:
 		params := node.Parameters
 		body := node.Body
@@ -142,7 +145,7 @@ func evalBlockStatement(block *ast.BlockStatement, env *object.Environment) obje
 		result = Eval(statement, env)
 		if result != nil {
 			rt := result.Type()
-			if rt == object.RETURN_VALUE_OBJ || rt == object.ERROR_OBJ {
+			if rt == object.RETURN_VALUE_OBJ || rt == object.ERROR_OBJ || rt == object.BREAK_OBJ {
 				return result
 			}
 		}
@@ -396,7 +399,16 @@ func evalForExpression(fe *ast.ForExpression, env *object.Environment) object.Ob
 	}
 
 	for isTruthy(condition) {
-		Eval(fe.Consequence, env)
+		consequence := Eval(fe.Consequence, env)
+		if isError(consequence) {
+			return consequence
+		}
+		if consequence.Type() == object.BREAK_OBJ {
+			break
+		}
+		if consequence.Type() == object.RETURN_VALUE_OBJ {
+			return unwrapReturnValue(consequence)
+		}
 		incrementordecrement := Eval(fe.IncrementOrDecrement, env)
 		if isError(incrementordecrement) {
 			return incrementordecrement

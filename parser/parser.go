@@ -114,6 +114,8 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseLetStatement()
 	case token.RETURN:
 		return p.parseReturnStatement()
+	case token.BREAK:
+		return p.parseBreakStatement()
 	default:
 		return p.parseExpressionStatement()
 	}
@@ -155,10 +157,10 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	}
 
 	// get value
-	p.nextToken()
 	if stmt.Assignment.Type == token.INCREMENT || stmt.Assignment.Type == token.DECREMENT {
 		stmt.Value = nil
 	} else {
+		p.nextToken()
 		stmt.Value = p.parseExpression(Lowest)
 	}
 
@@ -174,6 +176,16 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	// get value
 	p.nextToken()
 	stmt.ReturnValue = p.parseExpression(Lowest)
+
+	if p.peekTokenIs(token.SEMICOLON) {
+		p.nextToken()
+	}
+
+	return stmt
+}
+
+func (p *Parser) parseBreakStatement() *ast.BreakStatement {
+	stmt := &ast.BreakStatement{Token: p.currentToken}
 
 	if p.peekTokenIs(token.SEMICOLON) {
 		p.nextToken()
@@ -377,7 +389,7 @@ func (p *Parser) parseForExpression() ast.Expression {
 	// get condition
 	p.nextToken()
 	expression.Initialization = p.parseLetStatement()
-	if expression.Initialization.Assignment.Type != token.ASSIGN {
+	if expression.Initialization.Assignment.Literal != token.ASSIGN {
 		p.peekError(token.ASSIGN)
 		return nil
 	}
@@ -393,7 +405,7 @@ func (p *Parser) parseForExpression() ast.Expression {
 	// get condition
 	p.nextToken()
 	expression.IncrementOrDecrement = p.parseLetStatement()
-	if expression.IncrementOrDecrement.Assignment.Type == token.ASSIGN {
+	if expression.IncrementOrDecrement.Assignment.Literal == token.ASSIGN {
 		msg := fmt.Sprintf("not expecting next token to be %s", token.ASSIGN)
 		p.errors = append(p.errors, msg)
 		return nil

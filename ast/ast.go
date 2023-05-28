@@ -105,6 +105,21 @@ func (rs *ReturnStatement) String() string {
 	return out.String()
 }
 
+type BreakStatement struct {
+	Token token.Token // The 'break' token
+}
+
+func (be *BreakStatement) statementNode()       {}
+func (be *BreakStatement) TokenLiteral() string { return be.Token.Literal }
+func (be *BreakStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(be.Token.Literal)
+	out.WriteString(token.SEMICOLON)
+
+	return out.String()
+}
+
 type ExpressionStatement struct {
 	Token      token.Token // the first token of the expression
 	Expression Expression
