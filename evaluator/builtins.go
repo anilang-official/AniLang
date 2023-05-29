@@ -31,6 +31,63 @@ var builtins = map[string]*object.Builtin{
 		},
 	},
 
+	"append": {
+		Fn: func(args ...object.Object) object.Object {
+
+			if len(args) != 2 {
+				return newError("wrong number of arguments. got=%d, want=2",
+					len(args))
+			}
+
+			switch arg := args[0].(type) {
+
+			case *object.Array:
+				length := len(arg.Elements)
+				newElements := make([]object.Object, length+1)
+				copy(newElements, arg.Elements)
+				newElements[length] = args[1]
+				return &object.Array{Elements: newElements}
+
+			case *object.String:
+				return &object.String{Value: arg.Value + args[1].Inspect()}
+
+			default:
+				return newError("argument to `append` not supported, got %s",
+					args[0].Type())
+			}
+		},
+	},
+
+	"charAt": {
+		Fn: func(args ...object.Object) object.Object {
+
+			if len(args) != 2 {
+				return newError("wrong number of arguments. got=%d, want=2",
+					len(args))
+			}
+
+			switch arg := args[0].(type) {
+
+			case *object.String:
+				if args[1].Type() != object.INTEGER_OBJ {
+					return newError("2nd argument to `charAt` must be INTEGER, got %s",
+						args[1].Type())
+				}
+
+				index := args[1].(*object.Integer).Value
+				if index < 0 || index > int64(len(arg.Value)-1) {
+					return newError("index out of range")
+				}
+				return &object.String{Value: string(arg.Value[index])}
+
+			default:
+				return newError("argument to `charAt` not supported, got %s",
+					args[0].Type())
+			}
+
+		},
+	},
+
 	"first": {
 		Fn: func(args ...object.Object) object.Object {
 
