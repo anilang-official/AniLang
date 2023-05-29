@@ -412,3 +412,22 @@ func (fl *ForExpression) String() string {
 
 	return out.String()
 }
+
+type WhileExpression struct {
+	Token       token.Token // The 'while' token
+	Condition   Expression
+	Consequence *BlockStatement
+}
+
+func (fl *WhileExpression) expressionNode()      {}
+func (fl *WhileExpression) TokenLiteral() string { return fl.Token.Literal }
+func (fl *WhileExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("while ")
+	out.WriteString(fl.Condition.String())
+	out.WriteString(" ")
+	out.WriteString(fl.Consequence.String())
+
+	return out.String()
+}

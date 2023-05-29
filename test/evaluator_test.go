@@ -540,3 +540,22 @@ func TestForExpressionFunction(t *testing.T) {
 		}
 	}
 }
+
+func TestWhileExpressionFunction(t *testing.T) {
+	test := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			"let i = 0; while (i < 10) { let i += 1; }",
+			evaluator.NULL,
+		},
+	}
+
+	for _, tt := range test {
+		evaluated := testEval(tt.input)
+		if evaluated != tt.expected {
+			t.Errorf("expected %v, got %v", tt.expected, evaluated)
+		}
+	}
+}

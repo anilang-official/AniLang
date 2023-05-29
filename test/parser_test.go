@@ -964,3 +964,45 @@ func TestForExpression(t *testing.T) {
 	}
 
 }
+
+func TestWhileExpression(t *testing.T) {
+	input := `while (i < 10) { i }`
+
+	l := lexer.New(input)
+	p := parser.New(l)
+	program := p.ParseProgram()
+
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program.Statements does not contain 1 statements. got=%d", len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("exp not ast.ExpressionStatement. got=%T", program.Statements[0])
+	}
+
+	whileExp, ok := stmt.Expression.(*ast.WhileExpression)
+	if !ok {
+		t.Fatalf("exp not ast.WhileExpression. got=%T", stmt.Expression)
+	}
+
+	if !testInfixExpression(t, whileExp.Condition, "i", "<", 10) {
+		return
+	}
+
+	if len(whileExp.Consequence.Statements) != 1 {
+		t.Fatalf("whileExp.Body.Statements does not contain 1 statements. got=%d", len(whileExp.Consequence.Statements))
+	}
+
+	consequence, ok := whileExp.Consequence.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("stmt not ast.ExpressionStatement. got=%T", whileExp.Consequence.Statements[0])
+	}
+
+	if !testIdentifier(t, consequence.Expression, "i") {
+		return
+	}
+
+}

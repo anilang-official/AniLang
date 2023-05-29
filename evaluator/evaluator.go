@@ -33,6 +33,9 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	case *ast.ForExpression:
 		return evalForExpression(node, env)
 
+	case *ast.WhileExpression:
+		return evalWhileExpression(node, env)
+
 	case *ast.LetStatement:
 		return evalLetStatement(node, env)
 
@@ -406,10 +409,10 @@ func evalForExpression(fe *ast.ForExpression, env *object.Environment) object.Ob
 		if isError(consequence) {
 			return consequence
 		}
-		if consequence.Type() == object.BREAK_OBJ {
+		if isBreak(consequence) {
 			break
 		}
-		if consequence.Type() == object.RETURN_VALUE_OBJ {
+		if isReturn(consequence) {
 			return unwrapReturnValue(consequence)
 		}
 		incrementordecrement := Eval(fe.IncrementOrDecrement, env)
@@ -417,6 +420,32 @@ func evalForExpression(fe *ast.ForExpression, env *object.Environment) object.Ob
 			return incrementordecrement
 		}
 		condition = Eval(fe.Condition, env)
+		if isError(condition) {
+			return condition
+		}
+	}
+
+	return NULL
+}
+
+func evalWhileExpression(we *ast.WhileExpression, env *object.Environment) object.Object {
+	condition := Eval(we.Condition, env)
+	if isError(condition) {
+		return condition
+	}
+
+	for isTruthy(condition) {
+		consequence := Eval(we.Consequence, env)
+		if isError(consequence) {
+			return consequence
+		}
+		if isBreak(consequence) {
+			break
+		}
+		if isReturn(consequence) {
+			return unwrapReturnValue(consequence)
+		}
+		condition = Eval(we.Condition, env)
 		if isError(condition) {
 			return condition
 		}
@@ -460,6 +489,20 @@ func newError(format string, a ...interface{}) *object.Error {
 func isError(obj object.Object) bool {
 	if obj != nil {
 		return obj.Type() == object.ERROR_OBJ
+	}
+	return false
+}
+
+func isBreak(obj object.Object) bool {
+	if obj != nil {
+		return obj.Type() == object.BREAK_OBJ
+	}
+	return false
+}
+
+func isReturn(obj object.Object) bool {
+	if obj != nil {
+		return obj.Type() == object.RETURN_VALUE_OBJ
 	}
 	return false
 }
