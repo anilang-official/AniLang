@@ -46,6 +46,9 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return &object.ReturnValue{Value: val}
 
+	case *ast.NullValue:
+		return NULL
+
 	case *ast.BreakStatement:
 		return &object.Break{}
 

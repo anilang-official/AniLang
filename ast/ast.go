@@ -388,6 +388,14 @@ func (hl *HashLiteral) String() string {
 	return out.String()
 }
 
+type NullValue struct {
+	Token token.Token
+}
+
+func (nv *NullValue) expressionNode()      {}
+func (nv *NullValue) TokenLiteral() string { return nv.Token.Literal }
+func (nv *NullValue) String() string       { return nv.Token.Literal }
+
 type ForExpression struct {
 	Token                token.Token // The 'for' token
 	Initialization       *LetStatement

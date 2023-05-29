@@ -82,6 +82,7 @@ const (
 	CONTINUE = "CONTINUE" // continue;
 	WHILE    = "WHILE"    // while (x < y) { return true; }
 	FOR      = "FOR"      // for (i = 0; i < 10; i++) { return true; }
+	NULL     = "NULL"     // null
 )
 
 var keywords = map[string]TokenType{
@@ -97,6 +98,7 @@ var keywords = map[string]TokenType{
 	"continue": CONTINUE,
 	"while":    WHILE,
 	"for":      FOR,
+	"null":     NULL,
 }
 
 func LookupIdentifierType(identifier string) TokenType {
