@@ -30,3 +30,5 @@ macOS-installer:
 	mkdir -p installer/macOs/x64
 	pkgbuild --root build/macOS/arm64/AniLang/bin --identifier anilang.arm64.pgk --version 1.0.0 --install-location $(HOME)/AniLang/bin installer/macOs/arm64/tatakae.pkg --scripts scripts/macOs
 	pkgbuild --root build/macOS/amd64/AniLang/bin --identifier anilang.amd64.pgk --version 1.0.0 --install-location $(HOME)/AniLang/bin installer/macOs/x64/tatakae.pkg --scripts scripts/macOs
+	tar -cjf installer/macOs/arm64/tatakae.tar.gz -C build/macOS/arm64 .
+	tar -cjf installer/macOs/x64/tatakae.tar.gz -C build/macOS/amd64 .
